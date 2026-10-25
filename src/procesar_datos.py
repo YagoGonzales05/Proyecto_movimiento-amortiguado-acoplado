@@ -19,7 +19,7 @@ def calcular_fft(t, x, fs):
     amplitud = 2.0/N*np.abs(yf[0:N//2])
     return xf, amplitud
 
-def graficar_resultados(t,x,xf,amplitud,nombre_archivos="osciladores_fft.png"):
+def graficar_resultados(t,x,xf,amplitud,nombre_archivo="osciladores_fft.png"):
     """
     Genera una grafica de dos paneles:
     1. Posicion vs Tiempo (del sensor)
@@ -38,10 +38,26 @@ def graficar_resultados(t,x,xf,amplitud,nombre_archivos="osciladores_fft.png"):
     ax2.grid(True, linestyle='--',alpha=0.6)
     ax2.set_xlim(0,10)
     plt.tight_layout()
-    ruta.figura=f"figures/{nombre_archivo}"
-    plt.savefig(ruta.figura, dpi=300)
+    ruta_figura=f"figures/{nombre_archivo}"
+    plt.savefig(ruta_figura, dpi=300)
     print(f"Grafica guardada exitosamente en: {nombre_archivo}")
     plt.show()
 
 if __name__ == "__main__":
-    print("Módulo completo de procesamiento, FFT y graficación listo para los datos PASCO.")
+    print("Ejecutando prueba con datos simulados de osciladores acoplados...")
+    
+    # 1. Crear un tiempo simulado (ej. 10 segundos a 50 Hz de frecuencia de muestreo)
+    fs = 50.0  # Hz
+    t = np.linspace(0, 10, int(10 * fs))
+    
+    # 2. Simular una señal con dos frecuencias características (modo normal 1 y modo normal 2) + amortiguamiento
+    f1 = 1.2  # Hz (Modo 1)
+    f2 = 3.5  # Hz (Modo 2)
+    amortiguamiento = np.exp(-0.1 * t)
+    x = amortiguamiento * (np.sin(2 * np.pi * f1 * t) + 0.5 * np.sin(2 * np.pi * f2 * t))
+    
+    # 3. Aplicar la FFT
+    xf, amplitud = calcular_fft(t, x, fs)
+    
+    # 4. Generar y mostrar las gráficas
+    graficar_resultados(t, x, xf, amplitud, nombre_archivo="prueba_simulacion.png")
